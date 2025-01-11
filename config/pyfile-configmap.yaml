@@ -45,6 +45,6 @@ kind: ConfigMap
 metadata:
   creationTimestamp: "2025-01-11T20:04:32Z"
   name: pyfile
-  namespace: default
+  namespace: cleifsonaraujo
   resourceVersion: "364"
   uid: a014a46a-cfc8-46f5-9185-6ace404ccb56
