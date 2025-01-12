@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
         - name: dashboard
-          image: cleifson/monitoring-dashboard:02
+          image: cleifson/monitoring-dashboard:03
           ports:
-            - containerPort: 8501
+            - containerPort: 52001
           env:
             - name: REDIS_HOST
               value: "192.168.121.48"
@@ -37,5 +37,5 @@ spec:
   ports:
     - protocol: TCP
       port: 80
-      targetPort: 8501
+      targetPort: 52001
   type: ClusterIP

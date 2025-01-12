@@ -15,8 +15,7 @@ COPY dashboard.py .
 # Instala as dependências do Python
 RUN pip install --no-cache-dir streamlit redis
 
-# Expondo a porta 8501 para o Streamlit
-EXPOSE 8501
+EXPOSE 52001
 
 # Comando para rodar o Streamlit
-CMD ["streamlit", "run", "dashboard.py", "--server.port", "8501", "--server.enableCORS", "false"]
+CMD ["streamlit", "run", "dashboard.py", "--server.port", "52001", "--server.enableCORS", "false"]

@@ -3,7 +3,6 @@ import redis
 import json
 import time
 
-# Configurações do Redis
 REDIS_HOST = "localhost"  # O endereço do seu Redis
 REDIS_PORT = 6379
 REDIS_KEY = "metrics-output"  # Chave do Redis onde os dados serão armazenados
