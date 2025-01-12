@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: dashboard
-          image: cleifson/monitoring-dashboard:03
+          image: cleifson/monitoring-dashboard:04
           ports:
             - containerPort: 52001
           env:
@@ -36,6 +36,6 @@ spec:
     app: monitoring-dashboard
   ports:
     - protocol: TCP
-      port: 80
+      port: 52001
       targetPort: 52001
   type: ClusterIP
