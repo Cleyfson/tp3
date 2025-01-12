@@ -5,7 +5,6 @@ data:
     import json
     from typing import Any, Dict
 
-
     def handler(input: Dict[str, Any], context: Any) -> Dict[str, Any]:
         # Obtém a variável persistente do contexto
         env = context.env

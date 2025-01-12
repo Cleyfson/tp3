@@ -14,16 +14,23 @@ spec:
         app: monitoring-dashboard
     spec:
       containers:
-      - name: dashboard
-        image: cleifson/monitoring-dashboard:01
-        ports:
-        - containerPort: 8501
-
+        - name: dashboard
+          image: cleifson/monitoring-dashboard:02
+          ports:
+            - containerPort: 8501
+          env:
+            - name: REDIS_HOST
+              value: "192.168.121.48"
+            - name: REDIS_PORT
+              value: "6379"
+            - name: REDIS_KEY
+              value: "2021040130-proj3-output"
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: monitoring-dashboard
+  name: monitoring-dashboard-service
+  namespace: cleifsonaraujo
 spec:
   selector:
     app: monitoring-dashboard
@@ -31,4 +38,4 @@ spec:
     - protocol: TCP
       port: 80
       targetPort: 8501
-  type: NodePort
+  type: ClusterIP
