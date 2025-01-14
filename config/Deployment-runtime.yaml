@@ -34,7 +34,7 @@ spec:
               valueFrom:
                 configMapKeyRef:
                   name: outputkey
-                  key: output_key
+                  key: REDIS_OUTPUT_KEY
             - name: REDIS_MONITORING_PERIOD
               value: "5"
             - name: FUNCTION_ENTRY_POINT
