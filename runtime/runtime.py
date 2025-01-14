@@ -5,7 +5,6 @@ import json
 import importlib.util
 import zipfile
 import tempfile
-import requests
 from typing import Any, Dict
 
 
@@ -45,19 +44,15 @@ def load_function_from_config(pyfile_code: str, entry_point: str):
         raise RuntimeError(f"Error loading user function: {e}")
 
 
-def load_zip_and_function(zip_url: str, entry_point: str):
+def load_zip_and_function(zip_path: str, entry_point: str):
     try:
-        response = requests.get(zip_url)
-        response.raise_for_status()
+        # Usar o caminho local do arquivo ZIP
         temp_dir = tempfile.TemporaryDirectory()
-
-        zip_path = os.path.join(temp_dir.name, "function.zip")
-        with open(zip_path, "wb") as f:
-            f.write(response.content)
 
         with zipfile.ZipFile(zip_path, 'r') as zip_ref:
             zip_ref.extractall(temp_dir.name)
 
+        # Supondo que o script Python esteja em 'main.py' dentro do ZIP
         spec = importlib.util.spec_from_file_location("user_function", os.path.join(temp_dir.name, "main.py"))
         user_module = importlib.util.module_from_spec(spec)
         spec.loader.exec_module(user_module)
@@ -74,11 +69,13 @@ def main():
     redis_output_key = os.getenv('REDIS_OUTPUT_KEY', 'metrics-output')
     redis_monitoring_period = int(os.getenv('REDIS_MONITORING_PERIOD', 5))
     function_entry_point = os.getenv('FUNCTION_ENTRY_POINT', 'handler')
-    zip_file_url = os.getenv('ZIP_FILE_URL', '')
+    zip_file_url = os.getenv('ZIP_FILE_URL', '/mnt/shared/function.zip')  # Caminho do arquivo ZIP montado pelo PVC
 
-    if zip_file_url:
+    if zip_file_url and os.path.exists(zip_file_url):
+        print("Usando função a partir do arquivo ZIP")
         handler = load_zip_and_function(zip_file_url, function_entry_point)
     else:
+        print("Usando função a partir do código do ConfigMap (pyfile.yaml)")
         pyfile_code = os.getenv('PYFILE', '')
         handler = load_function_from_config(pyfile_code, function_entry_point)
 

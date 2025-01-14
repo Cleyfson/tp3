@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: runtime
-          image: cleifson/runtime:03
+          image: cleifson/runtime:04
           ports:
             - containerPort: 8080
           env:
@@ -40,12 +40,17 @@ spec:
             - name: FUNCTION_ENTRY_POINT
               value: "handler"
             - name: ZIP_FILE_URL
-              value: "" # URL opcional para o arquivo ZIP com a função
+              value: "/mnt/shared/function.zip"
           volumeMounts:
             - name: pyfile-volume
               mountPath: /app/pyfile-configmap.yaml
               subPath: pyfile-configmap.yaml
+            - name: persistent-storage
+              mountPath: /mnt/shared
       volumes:
         - name: pyfile-volume
           configMap:
             name: pyfile
+        - name: persistent-storage
+          persistentVolumeClaim:
+            claimName: project2-pv2-cleifsonaraujo-claim
