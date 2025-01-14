@@ -25,6 +25,9 @@ def fetch_metrics(redis_client, key):
 
 
 def main():
+    # Configurar a porta do Streamlit
+    os.environ["STREAMLIT_SERVER_PORT"] = "52011"
+
     # Configuração do título
     st.title("Dashboard de Monitoramento")
     st.markdown("Exibe métricas computadas pelo servidor.")

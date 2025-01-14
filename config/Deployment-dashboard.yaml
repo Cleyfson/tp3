@@ -15,9 +15,9 @@ spec:
     spec:
       containers:
         - name: dashboard-container
-          image: cleifson/monitoring-dashboard:05
+          image: cleifson/monitoring-dashboard:06
           ports:
-            - containerPort: 8501
+            - containerPort: 52011
           env:
             - name: REDIS_HOST
               value: "192.168.121.187"
