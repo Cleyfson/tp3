@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: runtime
-          image: cleifson/runtime:04
+          image: cleifson/runtime:05
           ports:
             - containerPort: 8080
           env:
