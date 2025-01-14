@@ -1,41 +1,30 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: monitoring-dashboard
+  name: dashboard-deployment
   namespace: cleifsonaraujo
 spec:
   replicas: 1
   selector:
     matchLabels:
-      app: monitoring-dashboard
+      app: dashboard
   template:
     metadata:
       labels:
-        app: monitoring-dashboard
+        app: dashboard
     spec:
       containers:
-        - name: dashboard
-          image: cleifson/monitoring-dashboard:04
+        - name: dashboard-container
+          image: cleifson/monitoring-dashboard:05
           ports:
-            - containerPort: 52001
+            - containerPort: 8501
           env:
             - name: REDIS_HOST
-              value: "192.168.121.48"
+              value: "192.168.121.187"
             - name: REDIS_PORT
               value: "6379"
-            - name: REDIS_KEY
-              value: "2021040130-proj3-output"
----
-apiVersion: v1
-kind: Service
-metadata:
-  name: monitoring-dashboard-service
-  namespace: cleifsonaraujo
-spec:
-  selector:
-    app: monitoring-dashboard
-  ports:
-    - protocol: TCP
-      port: 52001
-      targetPort: 52001
-  type: ClusterIP
+            - name: REDIS_OUTPUT_KEY
+              valueFrom:
+                configMapKeyRef:
+                  name: outputkey
+                  key: REDIS_OUTPUT_KEY

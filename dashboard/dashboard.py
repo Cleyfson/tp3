@@ -1,58 +1,57 @@
 import streamlit as st
 import redis
 import json
+import os
 import time
 
-REDIS_HOST = "localhost"  # O endereço do seu Redis
-REDIS_PORT = 6379
-REDIS_KEY = "metrics-output"  # Chave do Redis onde os dados serão armazenados
 
-# Função para conectar ao Redis
-def connect_to_redis():
-    return redis.StrictRedis(host=REDIS_HOST, port=REDIS_PORT, db=0)
+def connect_redis():
+    """Conecta ao Redis usando variáveis de ambiente."""
+    redis_host = os.getenv('REDIS_HOST', 'localhost')
+    redis_port = int(os.getenv('REDIS_PORT', 6379))
+    return redis.StrictRedis(host=redis_host, port=redis_port, db=0, decode_responses=True)
 
-# Função para ler dados do Redis
-def get_data_from_redis(redis_client):
+
+def fetch_metrics(redis_client, key):
+    """Busca métricas do Redis."""
     try:
-        data = redis_client.get(REDIS_KEY)
+        data = redis_client.get(key)
         if data:
             return json.loads(data)
-        else:
-            return None
+        return {}
     except Exception as e:
-        st.error(f"Erro ao ler do Redis: {e}")
-        return None
+        st.error(f"Erro ao buscar dados do Redis: {e}")
+        return {}
 
-# Função para exibir os dados no Streamlit
-def display_metrics(data):
-    if data:
-        st.write("### Métricas de Sistema")
-        st.write(f"**Percentual de Egressos de Rede**: {data.get('percent-network-egress', 'N/A')}%")
-        st.write(f"**Percentual de Cache de Memória**: {data.get('percent-memory-cache', 'N/A')}%")
-        
-        for key, value in data.items():
-            if key.startswith("avg-util-cpu"):
-                st.write(f"{key}: {value}%")
-    else:
-        st.write("Nenhum dado disponível.")
 
-# Função principal para a interface do dashboard
 def main():
-    st.title("Dashboard de Monitoramento de Sistema")
+    # Configuração do título
+    st.title("Dashboard de Monitoramento")
+    st.markdown("Exibe métricas computadas pelo servidor.")
 
-    # Conecta ao Redis
-    redis_client = connect_to_redis()
+    # Conectar ao Redis
+    redis_client = connect_redis()
+    redis_output_key = os.getenv("REDIS_OUTPUT_KEY", "metrics-output")
+
+    # Exibição contínua
+    st.sidebar.markdown("### Opções")
+    refresh_rate = st.sidebar.slider("Taxa de atualização (segundos)", 1, 30, 5)
+
+    st.header("Métricas")
+    placeholder = st.empty()
 
     while True:
-        # Lê os dados do Redis
-        data = get_data_from_redis(redis_client)
+        metrics = fetch_metrics(redis_client, redis_output_key)
 
-        # Exibe as métricas
-        display_metrics(data)
+        with placeholder.container():
+            if metrics:
+                for metric, value in metrics.items():
+                    st.metric(label=metric.capitalize(), value=value)
+            else:
+                st.warning("Nenhuma métrica encontrada no Redis.")
 
-        # Atualiza a cada 5 segundos
-        time.sleep(5)
-        st.experimental_rerun()
+        time.sleep(refresh_rate)
+
 
 if __name__ == "__main__":
     main()

@@ -1,4 +1,8 @@
 apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: pyfile
+  namespace: cleifsonaraujo
 data:
   pyfile: |
     import redis
@@ -12,11 +16,11 @@ data:
 
         # Dados de entrada com verificação de presença das chaves
         cpu_utilizations = [value for key, value in input.items() if key.startswith("cpu_percent-")]
-        cached = input.get("virtual_memory-cached", 0)  # Valor padrão caso a chave não exista
-        buffers = input.get("virtual_memory-buffers", 0)  # Valor padrão caso a chave não exista
-        total_memory = input.get("virtual_memory-total", 1)  # Valor padrão caso a chave não exista
-        bytes_sent = input.get("net_io_counters_eth0-bytes_sent1", 0)  # Valor padrão caso a chave não exista
-        bytes_recv = input.get("net_io_counters_eth0-bytes_recv1", 0)  # Valor padrão caso a chave não exista
+        cached = input.get("virtual_memory-cached", 0)
+        buffers = input.get("virtual_memory-buffers", 0)
+        total_memory = input.get("virtual_memory-total", 1)
+        bytes_sent = input.get("net_io_counters_eth0-bytes_sent1", 0)
+        bytes_recv = input.get("net_io_counters_eth0-bytes_recv1", 0)
 
         # Calcula métricas
         percent_network_egress = (bytes_sent / (bytes_sent + bytes_recv) * 100) if (bytes_sent + bytes_recv) > 0 else 0
@@ -40,10 +44,3 @@ data:
             **moving_averages,
         }
         return result
-kind: ConfigMap
-metadata:
-  creationTimestamp: "2025-01-11T20:04:32Z"
-  name: pyfile
-  namespace: cleifsonaraujo
-  resourceVersion: "364"
-  uid: a014a46a-cfc8-46f5-9185-6ace404ccb56

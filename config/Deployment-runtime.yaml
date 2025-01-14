@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: runtime
-          image: cleifson/runtime:01
+          image: cleifson/runtime:02
           ports:
             - containerPort: 8080
           env:
@@ -25,17 +25,22 @@ spec:
                   name: pyfile
                   key: pyfile
             - name: REDIS_HOST
-              value: "192.168.121.48"
+              value: "192.168.121.187"
             - name: REDIS_PORT
               value: "6379"
             - name: REDIS_INPUT_KEY
               value: "metrics"
             - name: REDIS_OUTPUT_KEY
-              value: "2021040130-proj3-output"
+              valueFrom:
+                configMapKeyRef:
+                  name: outputkey
+                  key: output_key
             - name: REDIS_MONITORING_PERIOD
               value: "5"
             - name: FUNCTION_ENTRY_POINT
               value: "handler"
+            - name: ZIP_FILE_URL
+              value: "" # URL opcional para o arquivo ZIP com a função
           volumeMounts:
             - name: pyfile-volume
               mountPath: /app/pyfile-configmap.yaml
