@@ -3,8 +3,5 @@ data:
   REDIS_OUTPUT_KEY: 2021040130-proj3-output
 kind: ConfigMap
 metadata:
-  creationTimestamp: "2025-01-11T20:05:00Z"
   name: outputkey
   namespace: cleifsonaraujo
-  resourceVersion: "391"
-  uid: 78b01dd0-859c-476b-9095-0514922f3f63
