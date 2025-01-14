@@ -19,6 +19,11 @@ spec:
           ports:
             - containerPort: 8080
           env:
+            - name: PYFILE
+              valueFrom:
+                configMapKeyRef:
+                  name: pyfile
+                  key: pyfile
             - name: REDIS_HOST
               value: "192.168.121.187"
             - name: REDIS_PORT
@@ -37,9 +42,15 @@ spec:
             - name: ZIP_FILE_URL
               value: "/mnt/shared/function.zip"
           volumeMounts:
+            - name: pyfile-volume
+              mountPath: /app/pyfile-configmap.yaml
+              subPath: pyfile-configmap.yaml
             - name: persistent-storage
               mountPath: /mnt/shared
       volumes:
+        - name: pyfile-volume
+          configMap:
+            name: pyfile
         - name: persistent-storage
           persistentVolumeClaim:
             claimName: project2-pv2-cleifsonaraujo-claim
