@@ -15,7 +15,7 @@ spec:
     spec:
       containers:
         - name: dashboard-container
-          image: cleifson/monitoring-dashboard:06
+          image: cleifson/monitoring-dashboard:12
           ports:
             - containerPort: 52011
           env:
